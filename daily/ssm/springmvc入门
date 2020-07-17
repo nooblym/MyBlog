@@ -1,0 +1,43 @@
+# Springmvc入门
+
+## Controller接收参数
+
++ 在RequestMapping方法中设置请求的参数key
+
+    ```java
+    @RequestMapping(path = "new")
+    public void newUser(String name,String password){
+        ...
+    }
+    ```
+
+    在获取请求url时springmvc会自动将请求参数中的name和password注入进来，如果请求参数没有name和passoword那么这两项为null
+
++ 在RequestMapping方法参数中设置请求的参数key
+
+    ```java
+    @RequestMapping(path = "new")
+    public void newUser(@Param(value = "") String name,@Param(value = "") String password){
+        ...
+    }
+    ```
+
+    在方法参数前面加上@Param(value = "")注解可以指定请求参数的key
+
++ 对请求参数进行封装
+
+    ```java
+    @RequestMapping(path = "new")
+    public void newUser(User user){
+        ...
+    }
+    class User{
+        private String name;
+        private String password;
+        private int age;
+        ....
+         // getter and setter
+    }
+    ```
+
+    springmvc会自动将请求参数封装到user对象中，需要注意的是，spirngmvc只会封装和user类属性相同的key，不一样的封装不了

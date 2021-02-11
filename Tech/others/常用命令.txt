@@ -1,0 +1,68 @@
+环境：center OS7 64位
+升级系统
+sudo yum install epel-release -y
+sudo yum update -y
+sudo shutdown -r now
+安装Nux Dextop Yum 源
+由于CentOS没有官方FFmpeg rpm软件包。但是，我们可以使用第三方YUM源（Nux Dextop）完成此工作。
+sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+安装FFmpeg 和 FFmpeg开发包
+sudo yum install ffmpeg ffmpeg-devel -y
+
+pip install --upgrade pip
+pip install youtube-dl
+pip install --upgrade youtube-dl
+youtube-dl -o '%(title)s.%(ext)s' [url]
+
+安装youtube-upload
+pip install google-api-python-client
+pip install progressbar2 
+wget https://github.com/tokland/youtube-upload/archive/master.zip
+unzip master.zip
+cd youtube-upload-master
+sudo python setup.py install
+
+
+
+
+youtube-upload --client-secrets=/home/liu/client_secrets.json --title="测试视频" /home/liu/video/315晚会曝光了啥.flv 
+
+youtube-upload --client-secrets=/home/liu/client_secrets.json /home/liu/video/关于口水的五个真相.flv
+
+
+
+
+#!/bin/bash
+cd /home/liu/video/up
+num=1
+tags="相声,中国相声,郭德纲于谦,China"
+echo "$dd-----开始任务">>/home/liu/video/uplog.txt
+for FILE in `ls`; do
+youtube-upload --client-secrets=/home/liu/client_secrets.json --title=${FILE%.*} $FILE --description="如果你喜欢，请订阅我的频道，谢谢" --tags="$tags" --privacy="unlisted" --publish-at="$dd.836+0000"
+dd=$(date -d "$time $num days "  "+%Y-%m-%dT%H:%M:%S")
+let num+=1
+echo "$FILE-----上传完成">>/home/liu/video/uplog.txt
+# rm -f $FILE
+# echo "$FILE-----已删除">>/home/liu/video/uplog.txt
+done
+echo "$dd-----任务完成">>/home/liu/video/uplog.txt
+
+
+#!/bin/bash
+dd=$(date -d "$time $num days "  "+%Y-%m-%dT%H:%M:%S")
+echo "$dd开始">>downlog.txt
+for line in `cat downurl.txt`
+do
+    youtube-dl -o /home/liu/video/up/'%(title)s.%(ext)s' $line
+    echo "$line-----下载完成">>downlog.txt
+done
+echo "$dd结束，下载完成">>downlog.txt
+
+
+
+
+后台执行，即使关闭终端仍运行：
+nohup ./xxx.sh > /dev/null 2> /dev/null &
+如：nohup ./up.sh > /dev/null 2> /dev/null &
+nohup ./down.sh > /dev/null 2> /dev/null &
